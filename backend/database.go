@@ -20,7 +20,7 @@ type PostgresDB struct {
 }
 
 func NewPostgresDB() (*PostgresDB, error) {
-	connStr := "host=localhost port=5433 user=postgres password=demopostgres dbname=demoproduct sslmode=disable"
+	connStr := "host=my-postgres port=5432 user=postgres password=demopostgres dbname=demoproduct sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 
 	if err != nil {
@@ -49,7 +49,6 @@ func (s *PostgresDB) CreateProductTable() error {
 		picture VARCHAR(255),
 		price DEC(12,2)
 	)`
-	s.db.Query("DROP TABLE Product")
 	_, err := s.db.Exec(query)
 	return err
 }
