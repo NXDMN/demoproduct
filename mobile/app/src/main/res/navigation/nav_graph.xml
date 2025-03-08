@@ -3,26 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/ProductListFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.nxdmn.demoproduct.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/ProductListFragment"
+        android:name="com.nxdmn.demoproduct.ProductListFragment"
+        android:label="@string/product_list_fragment_label"
+        tools:layout="@layout/fragment_product_list">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_ProductListFragment_to_ProductDetailFragment"
+            app:destination="@id/ProductDetailFragment" >
+            <argument
+                android:name="productId"
+                android:defaultValue="0" />
+        </action>
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.nxdmn.demoproduct.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/ProductDetailFragment"
+        android:name="com.nxdmn.demoproduct.ProductDetailFragment"
+        android:label="@string/product_detail_fragment_label"
+        tools:layout="@layout/fragment_product_detail">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_ProductDetailFragment_to_ProductListFragment"
+            app:destination="@id/ProductListFragment" />
+        <argument
+            android:name="productId"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>
