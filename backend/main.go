@@ -12,4 +12,6 @@ func main() {
 	if err := db.Init(); err != nil {
 		log.Fatal(err)
 	}
+	server := NewWebAPIServer(":3000", db)
+	server.Run()
 }

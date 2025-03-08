@@ -1,13 +1,5 @@
 package main
 
-type CreateProductRequest struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	ProductType string  `json:"type"`
-	Picture     string  `json:"picture"`
-	Price       float64 `json:"price"`
-}
-
 type Product struct {
 	ID          int     `json:"id"`
 	Name        string  `json:"name"`

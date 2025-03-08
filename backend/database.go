@@ -10,8 +10,8 @@ import (
 type Database interface {
 	GetProducts() ([]*Product, error)
 	GetProduct(int) (*Product, error)
-	CreateProduct(*Product) error
-	UpdateProduct(*Product) error
+	CreateProduct(*Product) (int, error)
+	UpdateProduct(*Product) (*Product, error)
 	DeleteProduct(int) error
 }
 
@@ -96,32 +96,33 @@ func (s *PostgresDB) GetProduct(id int) (*Product, error) {
 	return nil, fmt.Errorf("product %d not found", id)
 }
 
-func (s *PostgresDB) CreateProduct(product *Product) error {
+func (s *PostgresDB) CreateProduct(product *Product) (int, error) {
+	var id int
 	query := `insert into Product 
 	(name, description, type, picture, price) 
-	values($1, $2, $3, $4, $5)`
+	values($1, $2, $3, $4, $5)
+	returning id`
 
-	res, err := s.db.Query(query, product.Name, product.Description, product.ProductType, product.Picture, product.Price)
-	if err != nil {
-		return err
+	if err := s.db.QueryRow(query, product.Name, product.Description, product.ProductType, product.Picture, product.Price).Scan(&id); err != nil {
+		return -1, err
 	}
-
-	fmt.Println("%+v\n", res)
-	return nil
+	return id, nil
 }
 
-func (s *PostgresDB) UpdateProduct(product *Product) error {
+func (s *PostgresDB) UpdateProduct(product *Product) (*Product, error) {
 	query := `update Product 
 	set name = $2, description = $3, type = $4, picture = $5, price = $6
-	where id = $1`
+	where id = $1
+	returning *`
 
-	res, err := s.db.Query(query, product.ID, product.Name, product.Description, product.ProductType, product.Picture, product.Price)
+	rows, err := s.db.Query(query, product.ID, product.Name, product.Description, product.ProductType, product.Picture, product.Price)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	fmt.Println("%+v\n", res)
-	return nil
+	for rows.Next() {
+		return scanIntoProduct(rows)
+	}
+	return nil, fmt.Errorf("update product %d failed", product.ID)
 }
 
 func (s *PostgresDB) DeleteProduct(id int) error {
