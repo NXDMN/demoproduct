@@ -1,4 +1,4 @@
-package com.nxdmn.demoproduct
+package com.nxdmn.demoproduct.data
 
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -11,10 +11,11 @@ class ProductWebAPIDataSource : ProductDataSource {
     private val client: OkHttpClient = OkHttpClient()
 
     @Throws(IOException::class)
-    override suspend fun findAll(): List<Product> {
+    override suspend fun findAll(page: Int, limit: Int, searchText: String): List<Product> {
         var products: List<Product> = emptyList()
+
         val request: Request = Request.Builder()
-            .url("http://10.0.2.2:3000/products")
+            .url("http://10.0.2.2:3000/products?page=$page&limit=$limit${if(searchText.isNotEmpty()) "&searchText=$searchText" else ""}")
             .build()
 
         client.newCall(request).execute().use { response ->

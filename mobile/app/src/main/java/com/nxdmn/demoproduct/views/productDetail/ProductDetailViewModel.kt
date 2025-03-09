@@ -1,4 +1,4 @@
-package com.nxdmn.demoproduct
+package com.nxdmn.demoproduct.views.productDetail
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.nxdmn.demoproduct.MainApplication
+import com.nxdmn.demoproduct.data.Product
+import com.nxdmn.demoproduct.data.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

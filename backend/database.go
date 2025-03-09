@@ -8,7 +8,7 @@ import (
 )
 
 type Database interface {
-	GetProducts() ([]*Product, error)
+	GetProducts(int, int, string) ([]*Product, error)
 	GetProduct(int) (*Product, error)
 	CreateProduct(*Product) (int, error)
 	UpdateProduct(*Product) (*Product, error)
@@ -53,8 +53,10 @@ func (s *PostgresDB) CreateProductTable() error {
 	return err
 }
 
-func (s *PostgresDB) GetProducts() ([]*Product, error) {
-	rows, err := s.db.Query("select * from Product")
+func (s *PostgresDB) GetProducts(limit, offset int, searchText string) ([]*Product, error) {
+	query := `select * from Product where lower(name) like '%' || $3 || '%' limit $1 offset $2 `
+
+	rows, err := s.db.Query(query, limit, offset, searchText)
 	if err != nil {
 		return nil, err
 	}

@@ -57,7 +57,19 @@ func (s *WebAPIServer) Run() {
 }
 
 func (s *WebAPIServer) handleGetProducts(w http.ResponseWriter, r *http.Request) error {
-	products, err := s.db.GetProducts()
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+
+	searchText := r.URL.Query().Get("searchText")
+
+	products, err := s.db.GetProducts(limit, offset, searchText)
 	if err != nil {
 		return err
 	}

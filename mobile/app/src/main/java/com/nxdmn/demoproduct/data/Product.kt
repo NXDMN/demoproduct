@@ -1,4 +1,4 @@
-package com.nxdmn.demoproduct
+package com.nxdmn.demoproduct.data
 
 import kotlinx.serialization.Serializable
 

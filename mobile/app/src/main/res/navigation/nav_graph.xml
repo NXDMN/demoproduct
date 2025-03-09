@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/ProductListFragment"
-        android:name="com.nxdmn.demoproduct.ProductListFragment"
+        android:name="com.nxdmn.demoproduct.views.productList.ProductListFragment"
         android:label="@string/product_list_fragment_label"
         tools:layout="@layout/fragment_product_list">
 
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/ProductDetailFragment"
-        android:name="com.nxdmn.demoproduct.ProductDetailFragment"
+        android:name="com.nxdmn.demoproduct.views.productDetail.ProductDetailFragment"
         android:label="@string/product_detail_fragment_label"
         tools:layout="@layout/fragment_product_detail">
 
