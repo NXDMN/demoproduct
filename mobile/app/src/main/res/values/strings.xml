@@ -2,9 +2,11 @@
     <string name="app_name">DemoProduct</string>
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
     <!-- Strings used for fragments for navigation -->
     <string name="product_list_fragment_label">Product List</string>
     <string name="product_detail_fragment_label">Product Detail</string>
+    <string name="searchbar_hint">Search by name</string>
 
     <string name="add_button">Add Product</string>
     <string name="product_name">Name</string>

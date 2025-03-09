@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.nxdmn.demoproduct.databinding.FragmentProductListBinding
 
@@ -33,14 +34,29 @@ class ProductListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.gridView.adapter = ProductGridAdapter(view.context, viewmodel.products, onProductClicked = { id ->
-            val bundle = bundleOf("productId" to id)
-            findNavController().navigate(R.id.action_ProductListFragment_to_ProductDetailFragment, bundle)
-        })
+        viewmodel.refreshList()
+
+        val nameObserver = Observer<List<Product>> { products ->
+            binding.gridView.adapter = ProductGridAdapter(view.context, products, onProductClicked = { id ->
+                val bundle = bundleOf("productId" to id)
+                findNavController().navigate(R.id.action_ProductListFragment_to_ProductDetailFragment, bundle)
+            })
+        }
+
+        viewmodel.currentProducts.observe(viewLifecycleOwner, nameObserver)
+
+//        binding.gridView.adapter = ProductGridAdapter(view.context, viewmodel.products, onProductClicked = { id ->
+//            val bundle = bundleOf("productId" to id)
+//            findNavController().navigate(R.id.action_ProductListFragment_to_ProductDetailFragment, bundle)
+//        })
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_ProductListFragment_to_ProductDetailFragment)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onDestroyView() {

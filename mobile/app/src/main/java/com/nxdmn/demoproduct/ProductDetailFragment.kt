@@ -20,7 +20,7 @@ import com.nxdmn.demoproduct.databinding.FragmentProductDetailBinding
 class ProductDetailFragment : Fragment() {
     private val viewmodel: ProductDetailViewModel by viewModels<ProductDetailViewModel> (
         extrasProducer = {
-            MutableCreationExtras().apply {
+            MutableCreationExtras(this.defaultViewModelCreationExtras).apply {
                 set(ProductDetailViewModel.PRODUCT_ID_KEY, arguments?.getInt("productId"))
             }
         },
@@ -36,7 +36,6 @@ class ProductDetailFragment : Fragment() {
     private val imagePicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             viewmodel.updateImage(uri.toString())
-            invalidate()
         }
     }
 
@@ -44,16 +43,19 @@ class ProductDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentProductDetailBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbar.inflateMenu(R.menu.menu_product_detail)
+
+        viewmodel.isEdit.observe(viewLifecycleOwner){
+            binding.toolbar.menu.findItem(R.id.action_delete).isVisible = it
+        }
+
         binding.toolbar.apply {
             setNavigationOnClickListener{
                 findNavController().navigateUp()
@@ -61,32 +63,53 @@ class ProductDetailFragment : Fragment() {
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_save -> {
+                        save()
+                        true
+                    }
+                    R.id.action_delete -> {
+                        viewmodel.delete()
+                        findNavController().navigateUp()
                         true
                     }
                     else -> false
                 }
             }
         }
-        invalidate()
+
+        viewmodel.name.observe(viewLifecycleOwner){
+            binding.nameView.setText(it)
+        }
+        viewmodel.description.observe(viewLifecycleOwner){
+            binding.descriptionView.setText(it)
+        }
+        viewmodel.type.observe(viewLifecycleOwner){
+            binding.typeView.setText(it)
+        }
+        viewmodel.image.observe(viewLifecycleOwner){
+            if(it != null){
+                binding.imageView.setImageBitmap(readImageFromPath(requireContext(), it))
+            }else{
+                binding.imageView.visibility = View.INVISIBLE
+            }
+        }
+        viewmodel.price.observe(viewLifecycleOwner){
+            if(it != 0.0){
+                binding.priceView.setText(String.format("%.2f".format(it)))
+            }
+        }
 
         binding.addImgButton.setOnClickListener {
             imagePicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 
-    private fun invalidate(){
-        val product = viewmodel.product
-        binding.nameView.setText(product?.name)
-        binding.descriptionView.setText(product?.description)
-        binding.typeView.setText(product?.productType)
-        binding.priceView.setText(String.format("%.2f".format(product?.price)))
-        binding.nameView.setText(product?.name)
-
-        if(product?.picture != null){
-            binding.imageView.setImageBitmap(readImageFromPath(requireContext(), product.picture))
-        }else{
-            binding.imageView.visibility = View.INVISIBLE
-        }
+    private fun save(){
+        val name = binding.nameView.text.toString()
+        val description = binding.descriptionView.text.toString()
+        val type = binding.typeView.text.toString()
+        val price = binding.priceView.text.toString()
+        viewmodel.save(name, description, type, price)
+        findNavController().navigateUp()
     }
 
     override fun onResume() {

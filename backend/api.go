@@ -109,7 +109,7 @@ func (s *WebAPIServer) handleDeleteProduct(w http.ResponseWriter, r *http.Reques
 	if err := s.db.DeleteProduct(id); err != nil {
 		return err
 	}
-	return WriteJSON(w, http.StatusOK, map[string]int{"deleted": id})
+	return WriteJSON(w, http.StatusOK, id)
 }
 
 func getIdFromRequest(r *http.Request) (int, error) {

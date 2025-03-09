@@ -34,6 +34,9 @@ fun readImageFromPath(context: Context, path: String): Bitmap?{
     val uri = Uri.parse(path)
     if(uri != null){
         try {
+            context.contentResolver.apply{
+                takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
             val source = ImageDecoder.createSource(context.contentResolver, uri)
             bitmap = ImageDecoder.decodeBitmap(source)
         }

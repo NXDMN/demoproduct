@@ -28,7 +28,7 @@ class ProductGridAdapter(context: Context,
         nameView.text = product!!.name
         imageView.setImageBitmap(readImageFromPath(context, product.picture))
         priceView.text = String.format(Locale.getDefault(), "%.2f", product.price)
-        itemView.setOnClickListener { onProductClicked(product.id) }
+        itemView.setOnClickListener { onProductClicked(product.id!!) }
         return itemView
     }
 }
